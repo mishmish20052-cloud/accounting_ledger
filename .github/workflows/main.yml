@@ -25,7 +25,6 @@ jobs:
       with:
         channel: 'stable'
 
-    # أمر سحري لإنشاء ملفات الـ Gradle والأندرويد المفقودة تلقائياً
     - name: Repair and Create Android Files
       run: flutter create --platforms=android .
 
@@ -39,4 +38,6 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: accounting-ledger-release-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
+        # تعديل المسار هنا ليصطاد أي ملف APK يخرج من عملية البناء دون التقيد بمسار محدد
+        path: "build/**/*.apk"
+        
