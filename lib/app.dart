@@ -10,20 +10,12 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ربط الـ settingsProvider المعرف في شاشة الإعدادات
-    final settings = ref.watch(settingsProvider);
-
     return MaterialApp(
-      title: 'دفتر الأستاذ المحاسبي',
+      title: 'Accounting Ledger',
       debugShowCheckedModeBanner: false,
-      themeMode: settings.themeMode == 'dark' ? ThemeMode.dark : ThemeMode.light,
+      themeMode: ThemeMode.light, // ثبتنا الوضع الفاتح مؤقتاً لمنع أي تضارب أو ترجمة خاطئة
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        brightness: Brightness.light,
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
         useMaterial3: true,
       ),
       initialRoute: '/',
