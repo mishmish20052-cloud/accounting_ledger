@@ -17,12 +17,13 @@ jobs:
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
-        distribution: 'zulu'
+        distribution: 'temurin' # استبدال الموزع لنسخة أكثر استقراراً مع أندرويد
         java-version: '17'
 
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
+        flutter-version: '3.22.x' # تحديد إصدار مستقر يمنع تضارب الـ AGP 9 الجديد
         channel: 'stable'
 
     - name: Repair and Create Android Files
@@ -32,12 +33,10 @@ jobs:
       run: flutter pub get
 
     - name: Build APK
-      run: flutter build apk --release
+      run: flutter build apk --release --no-shrink
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: accounting-ledger-release-apk
-        # تعديل المسار هنا ليصطاد أي ملف APK يخرج من عملية البناء دون التقيد بمسار محدد
-        path: "build/**/*.apk"
-        
+        path: build/app/outputs/flutter-apk/app-release.apk
