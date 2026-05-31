@@ -25,6 +25,10 @@ jobs:
       with:
         channel: 'stable'
 
+    # أمر سحري لإنشاء ملفات الـ Gradle والأندرويد المفقودة تلقائياً
+    - name: Repair and Create Android Files
+      run: flutter create --platforms=android .
+
     - name: Install dependencies
       run: flutter pub get
 
