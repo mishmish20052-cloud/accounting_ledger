@@ -37,7 +37,7 @@ class DashboardScreen extends ConsumerWidget {
           children: [
             Icon(icon, size: 48, color: Theme.of(context).primaryColor),
             const SizedBox(height: 8),
-            Text(title, style: const TextStyle(fontSize: 18, fontWeight:: FontWeight.bold)),
+            Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           ],
         ),
       ),
