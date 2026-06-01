@@ -18,7 +18,7 @@ void main() async {
   runApp(
     // تغليف التطبيق بالكامل داخل ProviderScope لتفعيل إدارة الحالة الذكية عبر Riverpod
     const ProviderScope(
-      child: App(),
+      child: MyApp(),
     ),
   );
 }
