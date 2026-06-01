@@ -3,52 +3,51 @@ import '../models/account.dart';
 import '../models/transaction.dart';
 import '../services/database_service.dart';
 
-// --- 1. متحكم إدارة الحسابات (Accounts Controller) ---
+// متحكم الحسابات
 class AccountListNotifier extends StateNotifier<List<Account>> {
   AccountListNotifier() : super([]) {
-    refreshAccounts(); // جلب الحسابات تلقائياً عند تشغيل التطبيق
+    refreshAccounts();
   }
 
-  // تحديث قائمة الحسابات من قاعدة البيانات
   Future<void> refreshAccounts() async {
     final accounts = await DatabaseService.instance.getAllAccounts();
     state = accounts;
   }
 
-  // إضافة حساب جديد وتحديث القائمة فوراً
   Future<void> addAccount(Account account) async {
     await DatabaseService.instance.insertAccount(account);
     await refreshAccounts();
   }
 }
 
-// توفير متحكم الحسابات للواجهات
-final accountListProvider = StateNotifierProvider<AccountListNotifier, List<Account>>((ref) {
+final accountListProvider =
+    StateNotifierProvider<AccountListNotifier, List<Account>>((ref) {
   return AccountListNotifier();
 });
 
+// متحكم الحركات المالية - يقبل accountId
+class TransactionListNotifier extends StateNotifier<List<TransactionModel>> {
+  final String accountId;
 
-// --- 2. متحكم إدارة القيود والعمليات (Transactions Controller) ---
-class TransactionNotifier extends StateNotifier<List<TransactionModel>> {
-  TransactionNotifier() : super([]);
-
-  // جلب العمليات الخاصة بحساب معين
-  Future<void> refreshTransactions(String accountId) async {
-    final transactions = await DatabaseService.instance.getTransactionsForAccount(accountId);
-    state = transactions;
+  TransactionListNotifier(this.accountId) : super([]) {
+    _load();
   }
 
-  // إضافة حركة مالية جديدة (له / عليه) وتحديث واجهة الحساب والحسابات العامة
-  Future<void> addTransaction(TransactionModel tx, WidgetRef ref) async {
+  Future<void> _load() async {
+    final list =
+        await DatabaseService.instance.getTransactionsForAccount(accountId);
+    state = list;
+  }
+
+  Future<void> addTransaction(TransactionModel tx) async {
     await DatabaseService.instance.insertTransaction(tx);
-    // تحديث قائمة الحركات للحساب الحالي
-    await refreshTransactions(tx.accountId);
-    // تحديث الأرصدة في قائمة الحسابات الرئيسية تلقائياً
-    await ref.read(accountListProvider.notifier).refreshAccounts();
+    await _load();
   }
 }
 
-// توفير متحكم العمليات للواجهات
-final transactionProvider = StateNotifierProvider<TransactionNotifier, List<TransactionModel>>((ref) {
-  return TransactionNotifier();
+final transactionListProvider = StateNotifierProvider.family<
+    TransactionListNotifier,
+    List<TransactionModel>,
+    String>((ref, accountId) {
+  return TransactionListNotifier(accountId);
 });
